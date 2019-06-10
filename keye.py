@@ -40,7 +40,7 @@ def addurlsfromlist():
 # Get the content length from the 'content-length' header or calculate it from the response's body.
 def getcontentlength(url):
     response = requests.get(url, allow_redirects=True, verify=False, timeout=5)
-    return response.headers['content-length'] if 'content-length' in response.headers else len(response.content)
+    return response.headers['content-length'] if 'content-length' in response.headers else str(len(response.content))
 
 def request(url):
     try:
