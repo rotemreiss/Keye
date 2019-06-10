@@ -37,11 +37,16 @@ def addurlsfromlist():
         url = url.rstrip()
         request(url)
 
+# Get the content length from the 'content-length' header or calculate it from the response's body.
+def getcontentlength(url):
+    response = requests.get(url, allow_redirects=True, verify=False, timeout=5)
+    return response.headers['content-length'] if 'content-length' in response.headers else len(response.content)
+
 def request(url):
     try:
         if not "http" in url:
             url = "http://" + url
-        contentlength = requests.get(url, allow_redirects=True, verify=False, timeout=5).headers['content-length']
+        contentlength = getcontentlength(url)
         try:
             committodb(url, contentlength)
             print("We have successfully added the URL to be monitored.")
@@ -51,7 +56,7 @@ def request(url):
     except:
         try:
             url = url.replace("http://", "https://")
-            contentlength = requests.get(url, allow_redirects=True, timeout=5).headers['content-length']
+            contentlength = getcontentlength(url)
             committodb(url, contentlength)
             print("We have successfully added the URL to be monitored.")
         except Exception as e:
@@ -79,7 +84,7 @@ def getfromdb():
 
 def connect(id, url, contentlength):
     try:
-        newcontentlength = requests.get(url, allow_redirects=True, verify=False, timeout=5).headers['content-length']
+        newcontentlength = getcontentlength(url)
         if newcontentlength == contentlength:
             pass
         else:
